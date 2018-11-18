@@ -3,6 +3,6 @@ defmodule MudTest do
   doctest Mud
 
   test "greets the world" do
-    assert Mud.hello() == :world
+    Mud.TestServer.start_link()
   end
 end
