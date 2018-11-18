@@ -8,7 +8,8 @@ defmodule Mud.MixProject do
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      elixirc_paths: elixirc_paths(Mix.env())
+      elixirc_paths: elixirc_paths(Mix.env()),
+      preferred_cli_env: [test_server: :test]
     ]
   end
 
@@ -26,7 +27,7 @@ defmodule Mud.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:mix_test_watch, "~> 0.9.0"}
+      {:mix_test_watch, "~> 0.9.0", only: :dev, runtime: false}
     ]
   end
 end
