@@ -1,5 +1,5 @@
 defmodule Mud.TestServer do
-  defmodule Listener do
+  defmodule Handler do
     use GenServer
 
     def init(args) do
@@ -18,7 +18,7 @@ defmodule Mud.TestServer do
 
     def handle_info({:tcp_closed, port}, state) do
       IO.puts("Closed #{inspect(port)}")
-      {:noreply, state}
+      {:stop, :normal, state}
     end
   end
 
@@ -33,7 +33,7 @@ defmodule Mud.TestServer do
   defp loop(listening_socket) do
     {:ok, socket} = :gen_tcp.accept(listening_socket)
     IO.puts("connected #{inspect(socket)}")
-    :ok = :gen_tcp.controlling_process(socket, Listener.new())
+    :ok = :gen_tcp.controlling_process(socket, Handler.new())
     loop(listening_socket)
   end
 end
