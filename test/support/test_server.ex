@@ -1,30 +1,39 @@
 defmodule Mud.TestServer do
-  use GenServer
+  defmodule Listener do
+    use GenServer
 
-  def init([port]) do
-    {:ok, socket} = :gen_tcp.listen(port, [])
-    IO.inspect(socket)
-    {:ok, socket} = :gen_tcp.accept(socket)
-    IO.inspect(socket)
+    def init(args) do
+      {:ok, args}
+    end
 
-    {:ok, %{socket: socket}}
+    def new do
+      {:ok, pid} = GenServer.start_link(__MODULE__, [])
+      pid
+    end
+
+    def handle_info({:tcp, port, text}, state) do
+      IO.puts("#{inspect(port)} #{text}")
+      {:noreply, state}
+    end
+
+    def handle_info({:tcp_closed, port}, state) do
+      IO.puts("Closed #{inspect(port)}")
+      {:noreply, state}
+    end
   end
 
-  def start_link() do
-    start_link(5000)
+  def start(port) do
+    spawn(fn ->
+      {:ok, listening_socket} = :gen_tcp.listen(port, [])
+      IO.puts("listening #{inspect(listening_socket)}")
+      loop(listening_socket)
+    end)
   end
 
-  def start_link(port) do
-    GenServer.start_link(__MODULE__, [port])
-  end
-
-  def handle_info({:tcp, _port, text}, state) do
-    IO.puts("Got #{text}")
-    {:noreply, state}
-  end
-
-  def handle_info({:tcp_closed, _port}, state) do
-    IO.puts("Closed")
-    {:noreply, state}
+  defp loop(listening_socket) do
+    {:ok, socket} = :gen_tcp.accept(listening_socket)
+    IO.puts("connected #{inspect(socket)}")
+    :ok = :gen_tcp.controlling_process(socket, Listener.new())
+    loop(listening_socket)
   end
 end
