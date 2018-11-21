@@ -1,39 +1,47 @@
 defmodule Mud.TestServer do
-  defmodule Handler do
-    use GenServer
-
-    def init(args) do
-      {:ok, args}
+  defmodule Conversation do
+    def start(socket) do
+      spawn(fn ->
+        IO.puts("started new conversation at #{inspect(self())}")
+        converse(socket)
+      end)
     end
 
-    def new do
-      {:ok, pid} = GenServer.start_link(__MODULE__, [])
-      pid
-    end
+    def converse(socket) do
+      receive do
+        {:tcp, port, 'quit\r\n'} ->
+          IO.puts("quitting #{inspect(port)}")
+          :gen_tcp.send(socket, "done")
 
-    def handle_info({:tcp, port, text}, state) do
-      IO.puts("#{inspect(port)} #{text}")
-      {:noreply, state}
-    end
+        {:tcp, port, text} ->
+          IO.puts("#{inspect(port)} #{text}")
+          :gen_tcp.send(socket, "yes, #{text}")
+          converse(socket)
 
-    def handle_info({:tcp_closed, port}, state) do
-      IO.puts("Closed #{inspect(port)}")
-      {:stop, :normal, state}
+        {:tcp_closed, port} ->
+          IO.puts("Closed #{inspect(port)}")
+
+        message ->
+          IO.puts("unexpected message: #{message}")
+      end
     end
   end
 
   def start(port) do
-    spawn(fn ->
-      {:ok, listening_socket} = :gen_tcp.listen(port, [])
-      IO.puts("listening #{inspect(listening_socket)}")
-      loop(listening_socket)
-    end)
+    {:ok, listening_socket} = :gen_tcp.listen(port, [])
+    IO.puts("listening #{inspect(listening_socket)}")
+
+    listen(listening_socket)
   end
 
-  defp loop(listening_socket) do
+  defp listen(listening_socket) do
     {:ok, socket} = :gen_tcp.accept(listening_socket)
     IO.puts("connected #{inspect(socket)}")
-    :ok = :gen_tcp.controlling_process(socket, Handler.new())
-    loop(listening_socket)
+
+    conversation = Conversation.start(socket)
+    :ok = :gen_tcp.controlling_process(socket, conversation)
+    IO.puts("handed over to #{inspect(conversation)}")
+
+    listen(listening_socket)
   end
 end
