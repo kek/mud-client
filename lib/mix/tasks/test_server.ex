@@ -13,7 +13,8 @@ defmodule Mix.Tasks.TestServer do
 
   def run([port]) do
     IO.puts("Running test server")
-    Mud.TestServer.start_link(port)
+    {:ok, pid} = Mud.TestServer.start_link(port)
     IO.gets(:stdio, "Enter to quit: ")
+    Process.exit(pid, :kill)
   end
 end
