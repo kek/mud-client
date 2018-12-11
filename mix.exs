@@ -9,7 +9,8 @@ defmodule Mud.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       elixirc_paths: elixirc_paths(Mix.env()),
-      preferred_cli_env: [test_server: :test]
+      preferred_cli_env: [test_server: :test],
+      dialyzer: [plt_add_apps: [:mix]]
     ]
   end
 
@@ -21,13 +22,14 @@ defmodule Mud.MixProject do
     ]
   end
 
-  defp elixirc_paths(env) when env in [:test], do: ["lib", "test/support"]
+  defp elixirc_paths(env) when env in [:test, :dev], do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:mix_test_watch, "~> 0.9.0", only: :dev, runtime: false}
+      {:mix_test_watch, "~> 0.9.0", only: :dev, runtime: false},
+      {:dialyxir, "~> 0.5", only: [:dev], runtime: false}
     ]
   end
 end
