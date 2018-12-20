@@ -1,4 +1,4 @@
-defmodule Mud.Conversation do
+defmodule Conversation do
   use GenServer
 
   def init(args) do
