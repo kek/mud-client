@@ -1,4 +1,6 @@
-defmodule TestServer do
+defmodule Mud.TestServer do
+  alias Mud.Conversation
+
   def init(port) do
     {:ok, listening_socket} = :gen_tcp.listen(port, [])
     IO.puts("listening #{inspect(listening_socket)}")
