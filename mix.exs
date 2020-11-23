@@ -28,8 +28,8 @@ defmodule Mud.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:mix_test_watch, "~> 0.9.0", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.0.0-rc.4", only: [:dev], runtime: false}
+      {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.0.0", only: [:dev], runtime: false}
     ]
   end
 end
