@@ -17,7 +17,7 @@ defmodule Mud.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
+      extra_applications: [:logger, :observer],
       mod: {Mud.Application, []}
     ]
   end
@@ -29,7 +29,8 @@ defmodule Mud.MixProject do
   defp deps do
     [
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.0.0", only: [:dev], runtime: false}
+      {:dialyxir, "~> 1.0.0", only: :dev, runtime: false},
+      {:remixed_remix, "~> 2.0", only: :dev}
     ]
   end
 end

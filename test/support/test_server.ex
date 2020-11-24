@@ -1,5 +1,7 @@
 defmodule Mud.TestServer do
-  alias Mud.Conversation
+  alias Mud.TestConversation
+
+  require Logger
 
   defmodule State do
     defstruct nothing: nil
@@ -15,7 +17,11 @@ defmodule Mud.TestServer do
   def handle_continue(listening_socket, state = %State{}) do
     {:ok, socket} = :gen_tcp.accept(listening_socket)
     IO.puts("connected #{inspect(socket)}")
-    :ok = :gen_tcp.controlling_process(socket, Conversation.start_link())
+
+    case :gen_tcp.controlling_process(socket, TestConversation.start_link()) do
+      :ok -> true
+      {:error, :closed} -> Logger.error("Socket closed")
+    end
 
     {:noreply, state, {:continue, listening_socket}}
   end

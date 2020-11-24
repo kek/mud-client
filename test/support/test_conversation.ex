@@ -1,4 +1,4 @@
-defmodule Mud.Conversation do
+defmodule Mud.TestConversation do
   use GenServer
 
   def init(args) do
@@ -12,7 +12,7 @@ defmodule Mud.Conversation do
 
   def handle_info({:tcp, port, text}, state) do
     IO.puts("#{inspect(port)} #{text}")
-    :gen_tcp.send(port, text)
+    :gen_tcp.send(port, String.reverse(text))
     {:noreply, state}
   end
 
