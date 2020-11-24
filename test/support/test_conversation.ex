@@ -11,6 +11,7 @@ defmodule Mud.TestConversation do
   end
 
   def handle_info({:tcp, port, text}, state) do
+    text = List.to_string(text)
     IO.puts("#{inspect(port)} #{text}")
     :gen_tcp.send(port, String.reverse(text))
     {:noreply, state}

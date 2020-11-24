@@ -31,4 +31,10 @@ defmodule Mud.Connection do
     Logger.debug("tcp_closed #{inspect(socket)} (#{inspect(state)})")
     {:noreply, state}
   end
+
+  def handle_info({:tcp, socket, text}, state) do
+    text = List.to_string(text)
+    Mud.Terminal.print(text)
+    {:noreply, state}
+  end
 end

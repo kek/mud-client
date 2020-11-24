@@ -24,6 +24,10 @@ defmodule Mud.Terminal do
     {:noreply, state}
   end
 
+  def print(text) do
+    IO.puts(text)
+  end
+
   defp loop(), do: GenServer.cast(self(), {:loop})
 
   defp do_command("observer") do

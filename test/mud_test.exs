@@ -7,7 +7,7 @@ defmodule MudTest do
     TestServer.start_link(5001)
     {:ok, socket} = :gen_tcp.connect('localhost', 5001, [])
     IO.inspect(socket, label: "socket")
-    :ok = :gen_tcp.send(socket, 'BU!\r')
+    :ok = :gen_tcp.send(socket, "BU!\r")
 
     receive do
       msg -> IO.inspect(msg, label: "got")
