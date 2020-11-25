@@ -35,9 +35,6 @@ defmodule Mud.Terminal do
     spawn(&:observer.start/0)
   end
 
-  defp do_command("") do
-  end
-
   defp do_command(text) do
     Mud.Connection.send(Mud.Connection, text)
   end

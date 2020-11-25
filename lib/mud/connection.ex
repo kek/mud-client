@@ -22,8 +22,8 @@ defmodule Mud.Connection do
   end
 
   def handle_call({:send, text}, _from, state) do
-    Logger.debug("Sending #{text}")
-    :gen_tcp.send(state.socket, text)
+    # Logger.debug("Sending #{text}")
+    :gen_tcp.send(state.socket, "#{text}\n")
     {:reply, :ok, state}
   end
 
@@ -32,7 +32,7 @@ defmodule Mud.Connection do
     {:noreply, state}
   end
 
-  def handle_info({:tcp, socket, text}, state) do
+  def handle_info({:tcp, _socket, text}, state) do
     text = List.to_string(text)
     Mud.Terminal.print(text)
     {:noreply, state}
